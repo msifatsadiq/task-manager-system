@@ -33,12 +33,13 @@
       <p>{{this.description}}</p>
       <p><strong>Due Date:</strong> {{this.due_date}}</p>
       <form
-        method="POST"
+        method="GET"
         action="/tasks/edit/{{this.id}}"
         style="display:inline;"
       >
-        <button type="submit" class="btn btn-success btn-sm">Edit</button>
+        <button type="submit" class="btn btn-warning btn-sm">Edit</button>
       </form>
+
       <form
         method="POST"
         action="/tasks/delete/{{this.id}}"

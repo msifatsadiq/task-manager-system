@@ -77,21 +77,37 @@ app.post("/tasks", (req, res) => {
   });
 });
 
-// update a task
-// app.put("/api/tasks/:id", (req, res) => {
-//   const taskId = req.params.id;
-//   const { title, description, status, due_date } = req.body;
-//   const query =
-//     "UPDATE tasklist SET title = ?,description = ?, status = ?,due_date = ? WHERE id = ?";
+// Render edit form for a task
+app.get("/tasks/edit/:id", (req, res) => {
+  const taskId = req.params.id;
+  const query = "SELECT * FROM tasklist WHERE id = ?";
+  db.query(query, [taskId], (err, result) => {
+    if (err) {
+      res.status(500).send("Error fetching task");
+    } else if (result.length === 0) {
+      res.status(404).send("Task not found");
+    } else {
+      res.render("edit", { task: result[0] });
+    }
+  });
+});
 
-//   db.query(query, [title, description, status, due_date, taskId], (err) => {
-//     if (err) {
-//       console.error("Error updating tasks", err);
-//       res.status(500).send("Error updating tasks");
-//     }
-//     res.json({ taskId, title, description, status, due_date });
-//   });
-// });
+// Update a task
+app.post("/tasks/update/:id", (req, res) => {
+  const taskId = req.params.id;
+  const { title, description, due_date } = req.body;
+  const query = "UPDATE tasklist SET title = ?, description = ?, due_date = ? WHERE id = ?";
+
+  db.query(query, [title, description, due_date, taskId], (err) => {
+    if (err) {
+      res.status(500).send("Error updating task");
+    } else {
+      res.redirect("/");
+    }
+  });
+});
+
+
 
 // delete a task
 app.post("/tasks/delete/:id", (req, res) => {
